@@ -71,6 +71,35 @@ pip install -r requirements.txt
 - [ ] Add instruction following
 - [ ] Implement evaluation
 
+## Contributions
+
+We welcome contributions from the community! If you'd like to help improve this project, please follow these steps:
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature-name`)
+3. Commit your changes (`git commit -m 'Add some feature'`)
+4. Push to the branch (`git push origin feature-name`)
+5. Create a Pull Request
+
+For major changes, please open an issue first to discuss your ideas.
+
+### Ways to Contribute:
+- Reporting bugs
+- Suggesting features/enhancements
+- Writing documentation
+- Fixing typos or grammar mistakes
+- Writing tests
+
+## Funding
+
+We are grateful for any financial support to help sustain this project. You can support us via:
+
+- **GitHub Sponsors:** [Link to Sponsor Page](https://github.com/sponsors/nexageapps)
+- **Patreon:** [KIARA's Patreon](https://patreon.com/kiara-slm)
+- **PayPal:** [Donate via PayPal](https://paypal.me/kiarafunding)
+
+Your support helps cover costs like hosting, domain names, and coffee to keep us coding!
+
 ## Key Concepts
 
 ### Tokenization
@@ -98,4 +127,3 @@ The core architecture using attention mechanisms instead of recurrence.
 ## License
 
 MIT License
-# kiara-slm-project
