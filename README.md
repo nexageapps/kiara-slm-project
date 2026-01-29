@@ -98,3 +98,4 @@ The core architecture using attention mechanisms instead of recurrence.
 ## License
 
 MIT License
+# kiara-slm-project
