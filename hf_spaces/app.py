@@ -23,7 +23,15 @@ class KiaraSpacesApp:
     def __init__(self):
         """Initialize the app with model and tokenizer."""
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.tokenizer = tiktoken.get_encoding("gpt2")
+        
+        # Initialize tokenizer (may fail in offline environments)
+        try:
+            self.tokenizer = tiktoken.get_encoding("gpt2")
+        except Exception as e:
+            print(f"⚠️ Warning: Could not initialize tokenizer: {e}")
+            print("   This is expected in offline environments.")
+            self.tokenizer = None
+        
         self.model = None
         self.model_config = None
         self.checkpoint_path = None
@@ -118,6 +126,9 @@ class KiaraSpacesApp:
         Returns:
             Generated text
         """
+        if self.tokenizer is None:
+            return "❌ Error: Tokenizer not initialized. This may be due to network issues."
+        
         if self.model is None:
             return "❌ Error: No model loaded. Please upload a checkpoint first."
         
@@ -162,7 +173,7 @@ def create_interface():
     """Create and configure the Gradio interface."""
     app = KiaraSpacesApp()
     
-    with gr.Blocks(title="Kiara SLM - Small Language Model", theme=gr.themes.Soft()) as demo:
+    with gr.Blocks(title="Kiara SLM - Small Language Model") as demo:
         gr.Markdown("""
         # 🚀 Kiara - Small Language Model
         
@@ -301,5 +312,6 @@ if __name__ == "__main__":
     demo.launch(
         server_name="0.0.0.0",
         server_port=7860,
-        share=False
+        share=False,
+        theme=gr.themes.Soft()
     )
