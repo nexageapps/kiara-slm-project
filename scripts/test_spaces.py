@@ -115,8 +115,16 @@ def test_app_creation():
             
             return demo
         except Exception as e:
+            error_msg = str(e)
             # Check if it's a network error (expected in offline environments)
-            if "openaipublic.blob.core.windows.net" in str(e) or "Failed to resolve" in str(e):
+            # We check for specific error indicators without relying on URL substring matching
+            is_network_error = (
+                "Failed to resolve" in error_msg or 
+                "Max retries exceeded" in error_msg or
+                "ConnectionError" in error_msg or
+                "NameResolutionError" in error_msg
+            )
+            if is_network_error:
                 print("  ⚠️  Network error (expected in offline environment)")
                 print("     The app will work fine on Hugging Face Spaces with internet access")
                 # Return a mock object to allow tests to continue
