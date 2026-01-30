@@ -1,0 +1,118 @@
+name: Sync to Hugging Face Spaces
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'hf_spaces/**'
+      - 'src/kiara/**'
+      - '.github/workflows/hf-spaces-sync.yml'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install Hugging Face CLI
+        run: |
+          pip install huggingface_hub
+      
+      - name: Sync to Hugging Face Spaces
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_USERNAME: ${{ vars.HF_USERNAME || 'your-hf-username' }}
+          HF_SPACE_NAME: ${{ vars.HF_SPACE_NAME || 'kiara-slm' }}
+        run: |
+          # Configure git
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          
+          # Login to Hugging Face
+          huggingface-cli login --token $HF_TOKEN
+          
+          # Clone the Space repository
+          SPACE_REPO="https://huggingface.co/spaces/${HF_USERNAME}/${HF_SPACE_NAME}"
+          echo "Syncing to: $SPACE_REPO"
+          
+          # Create a temporary directory for the Space
+          TEMP_DIR=$(mktemp -d)
+          cd $TEMP_DIR
+          
+          # Clone the Space (create if doesn't exist)
+          git clone $SPACE_REPO space || {
+            echo "Space doesn't exist, creating new Space..."
+            huggingface-cli repo create --type space --space-sdk gradio "${HF_USERNAME}/${HF_SPACE_NAME}"
+            git clone $SPACE_REPO space
+          }
+          
+          cd space
+          
+          # Copy files from repository
+          echo "Copying files..."
+          
+          # Copy app.py and requirements.txt to root
+          cp $GITHUB_WORKSPACE/hf_spaces/app.py .
+          cp $GITHUB_WORKSPACE/hf_spaces/requirements.txt .
+          
+          # Copy README
+          cp $GITHUB_WORKSPACE/hf_spaces/README.md .
+          
+          # Copy source code
+          rm -rf src
+          cp -r $GITHUB_WORKSPACE/src .
+          
+          # Create a .gitignore if it doesn't exist
+          if [ ! -f .gitignore ]; then
+            cat > .gitignore << 'EOF'
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.env
+.venv
+venv/
+checkpoints/
+*.pt
+*.pth
+.DS_Store
+EOF
+          fi
+          
+          # Check if there are changes
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "No changes to sync"
+            exit 0
+          fi
+          
+          # Commit and push
+          git add .
+          git commit -m "Sync from GitHub: $GITHUB_SHA" -m "Auto-sync triggered by push to main branch"
+          git push
+          
+          echo "✅ Successfully synced to Hugging Face Spaces"
+          echo "🌐 View your Space at: https://huggingface.co/spaces/${HF_USERNAME}/${HF_SPACE_NAME}"
+      
+      - name: Comment on commit (optional)
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HF_USERNAME: ${{ vars.HF_USERNAME || 'your-hf-username' }}
+          HF_SPACE_NAME: ${{ vars.HF_SPACE_NAME || 'kiara-slm' }}
+        run: |
+          # Create a comment on the commit with the Space URL
+          SPACE_URL="https://huggingface.co/spaces/${HF_USERNAME}/${HF_SPACE_NAME}"
+          echo "Deployed to Hugging Face Spaces: $SPACE_URL"
