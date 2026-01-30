@@ -1,0 +1,6 @@
+# This file has been moved to scripts/train.py
+# Please use: python scripts/train.py --config configs/small.yaml
+# Or: make train
+
+# For quick testing, you can still use this file by running:
+# python scripts/train.py --config configs/small.yaml

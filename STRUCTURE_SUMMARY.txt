@@ -1,0 +1,149 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    KIARA SLM - PRODUCTION STRUCTURE                          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+📦 kiara-slm-project/
+│
+├── 📂 src/kiara/                    ← Main Python Package
+│   ├── __init__.py
+│   ├── model.py                     ← GPT Architecture
+│   ├── attention.py                 ← Attention Mechanisms
+│   ├── training.py                  ← Training Utilities
+│   ├── tokenizer.py                 ← Tokenization
+│   ├── config.py                    ← Configuration Management
+│   │
+│   ├── 📂 cli/                      ← CLI Entry Points
+│   │   ├── train.py
+│   │   ├── evaluate.py
+│   │   └── generate.py
+│   │
+│   └── 📂 utils/                    ← Utilities
+│       ├── logging.py               ← Structured Logging
+│       ├── checkpoint.py            ← Checkpoint Manager
+│       └── metrics.py               ← Evaluation Metrics
+│
+├── 📂 scripts/                      ← Production Scripts
+│   ├── train.py                     ← Training Script
+│   ├── evaluate.py                  ← Evaluation Script
+│   ├── generate.py                  ← Text Generation
+│   └── serve.py                     ← FastAPI Server
+│
+├── 📂 configs/                      ← Configuration Files
+│   ├── default.yaml                 ← Default Config
+│   └── small.yaml                   ← Small Model Config
+│
+├── 📂 tests/                        ← Unit Tests
+│   ├── test_model.py
+│   ├── test_training.py
+│   ├── test_config.py
+│   └── test_utils.py
+│
+├── 📂 documentation/                ← All Documentation
+│   ├── README.md                    ← Documentation Index
+│   ├── QUICKSTART.md                ← 5-Minute Quick Start
+│   ├── README_PRODUCTION.md         ← Production Guide
+│   ├── TUTORIAL.md                  ← Learning Tutorial
+│   ├── CONFIGURATION.md             ← Config Reference
+│   ├── API.md                       ← API Documentation
+│   ├── PROJECT_STRUCTURE.md         ← Structure Details
+│   └── MIGRATION_GUIDE.md           ← Migration Guide
+│
+├── 📂 data/                         ← Training Data
+│   ├── train.txt                    (your data)
+│   └── val.txt                      (your data)
+│
+├── 📂 checkpoints/                  ← Model Checkpoints
+│   ├── checkpoint_epoch*.pt         (auto-saved)
+│   └── best_model.pt                (best model)
+│
+├── 📂 logs/                         ← Training Logs
+│   └── *.log                        (auto-generated)
+│
+├── 📂 notebooks/                    ← Jupyter Notebooks
+│   └── getting_started.md
+│
+├── 🐳 Dockerfile                    ← Docker Image
+├── 🐳 docker-compose.yml            ← Docker Compose
+├── 🔧 Makefile                      ← Build Automation
+├── 📦 setup.py                      ← Package Setup
+├── ⚙️  pyproject.toml               ← Project Config
+├── 📋 requirements.txt              ← Dependencies
+├── 🔒 .gitignore                    ← Git Ignore
+├── 🪝 .pre-commit-config.yaml       ← Pre-commit Hooks
+├── 🌍 .env.example                  ← Env Template
+├── 📖 README.md                     ← Main README
+└── ✅ SETUP_COMPLETE.md             ← Setup Guide
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                              QUICK COMMANDS                                  ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+📦 Installation:
+   make install              # Install package
+   make install-dev          # Install with dev tools
+
+🚀 Training:
+   make train                # Run training
+   python scripts/train.py --config configs/small.yaml
+
+🧪 Testing:
+   make test                 # Run all tests
+   pytest tests/ -v          # Verbose tests
+
+🎨 Code Quality:
+   make format               # Format code
+   make lint                 # Run linting
+
+🐳 Docker:
+   make docker-build         # Build image
+   docker-compose up train   # Run training
+   docker-compose up api     # Run API server
+
+📝 Generation:
+   python scripts/generate.py --checkpoint checkpoints/best_model.pt \
+       --prompt "Your prompt"
+
+🌐 API Server:
+   python scripts/serve.py --checkpoint checkpoints/best_model.pt
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                           DOCUMENTATION LINKS                                ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+🚀 Start Here:        documentation/QUICKSTART.md
+📖 Full Guide:        documentation/README_PRODUCTION.md
+⚙️  Configuration:    documentation/CONFIGURATION.md
+🌐 API Reference:     documentation/API.md
+📁 Structure:         documentation/PROJECT_STRUCTURE.md
+🔄 Migration:         documentation/MIGRATION_GUIDE.md
+📚 All Docs:          documentation/README.md
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                            KEY IMPROVEMENTS                                  ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+✅ Organized package structure (src/kiara/)
+✅ Production scripts with full features
+✅ Configuration management (YAML + env)
+✅ Checkpoint management with auto-cleanup
+✅ Structured logging (console + file)
+✅ REST API server (FastAPI)
+✅ Docker support (Dockerfile + compose)
+✅ Comprehensive testing (pytest)
+✅ Code quality tools (black, isort, flake8, mypy)
+✅ Pre-commit hooks
+✅ Makefile for automation
+✅ All documentation organized in one folder
+✅ Migration guide from old structure
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                              NEXT STEPS                                      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+1. pip install -e .
+2. Read documentation/QUICKSTART.md
+3. Prepare your data in data/
+4. python scripts/train.py --config configs/small.yaml
+5. python scripts/generate.py --checkpoint checkpoints/best_model.pt
+
+Happy Training! 🚀

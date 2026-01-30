@@ -5,7 +5,7 @@ Based on Sebastian Raschka's LLM book - Chapter 4
 
 import torch
 import torch.nn as nn
-from attention import MultiHeadAttention
+from kiara.attention import MultiHeadAttention
 
 
 class LayerNorm(nn.Module):

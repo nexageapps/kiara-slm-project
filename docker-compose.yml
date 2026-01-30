@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  train:
+    build: .
+    image: kiara-slm:latest
+    container_name: kiara-train
+    volumes:
+      - ./data:/app/data
+      - ./checkpoints:/app/checkpoints
+      - ./logs:/app/logs
+      - ./configs:/app/configs
+    environment:
+      - DEVICE=cuda
+      - LOG_LEVEL=INFO
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    command: python scripts/train.py
+
+  evaluate:
+    build: .
+    image: kiara-slm:latest
+    container_name: kiara-evaluate
+    volumes:
+      - ./data:/app/data
+      - ./checkpoints:/app/checkpoints
+      - ./logs:/app/logs
+    environment:
+      - DEVICE=cuda
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    command: python scripts/evaluate.py
+
+  api:
+    build: .
+    image: kiara-slm:latest
+    container_name: kiara-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./checkpoints:/app/checkpoints
+    environment:
+      - DEVICE=cuda
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    command: python scripts/serve.py
