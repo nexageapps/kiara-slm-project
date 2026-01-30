@@ -4,7 +4,7 @@ An open-source, production-ready implementation of a Small Language Model built 
 
 > Kiara represents clarity and accessibility in AI development - building language models that anyone can understand, learn from, and contribute to.
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # Install
@@ -24,7 +24,7 @@ python scripts/serve.py --checkpoint checkpoints/best_model.pt
 
 **See [Quick Start Guide](documentation/QUICKSTART.md) for detailed setup.**
 
-## ✨ Features
+## Features
 
 - **Production-Ready**: Docker support, API server, checkpoint management
 - **Flexible Configuration**: YAML configs, environment variables, CLI args
@@ -33,7 +33,7 @@ python scripts/serve.py --checkpoint checkpoints/best_model.pt
 - **Well Documented**: Extensive guides and API documentation
 - **Easy Deployment**: Docker Compose for training and serving
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 kiara-slm-project/
@@ -53,7 +53,7 @@ kiara-slm-project/
 └── data/                 # Training data
 ```
 
-## 📚 Documentation
+## Documentation
 
 ### Getting Started
 - **[Quick Start Guide](documentation/QUICKSTART.md)** - Get running in 5 minutes
@@ -68,20 +68,20 @@ kiara-slm-project/
 ### Migration & Reference
 - **[Migration Guide](documentation/MIGRATION_GUIDE.md)** - Upgrade from old structure
 
-## 🏗️ Architecture
+## Architecture
 
 ### System Overview
 
 ```mermaid
 flowchart TB
-    subgraph Data["📁 Data & Config"]
+    subgraph Data["Data & Config"]
         YAML[configs/*.yaml]
         ENV[.env]
         TRAIN_DATA[(data/train.txt)]
         VAL_DATA[(data/val.txt)]
     end
 
-    subgraph Core["🔧 Kiara Core (src/kiara)"]
+    subgraph Core["Kiara Core (src/kiara)"]
         CONFIG[config.py]
         TOKENIZER[tokenizer.py]
         MODEL[model.py]
@@ -90,14 +90,14 @@ flowchart TB
         UTILS[utils/]
     end
 
-    subgraph Scripts["📜 Scripts"]
+    subgraph Scripts["Scripts"]
         TRAIN_SCRIPT[train.py]
         EVAL_SCRIPT[evaluate.py]
         GEN_SCRIPT[generate.py]
         SERVE_SCRIPT[serve.py]
     end
 
-    subgraph Output["📤 Output"]
+    subgraph Output["Output"]
         CHECKPOINT[(checkpoints/)]
         API[REST API :8000]
         TEXT[Generated Text]
@@ -125,37 +125,21 @@ flowchart TB
 ### Model Architecture (GPT)
 
 ```mermaid
-flowchart LR
-    subgraph Input["Input"]
-        TOKENS[Token IDs]
-    end
-
-    subgraph Embed["Embedding"]
-        TE[Token Embedding]
-        PE[Position Embedding]
-    end
-
-    subgraph Blocks["Transformer Blocks × N"]
-        LN1[LayerNorm]
-        MHA[Multi-Head Attention]
-        ADD1[Add & Norm]
-        LN2[LayerNorm]
-        FFN[Feed-Forward]
-        ADD2[Add & Norm]
-    end
-
-    subgraph Output["Output"]
-        LN_FINAL[LayerNorm]
-        LM_HEAD[LM Head]
-        LOGITS[Logits]
-    end
-
-    TOKENS --> TE
-    TOKENS --> PE
-    TE --> Blocks
-    PE --> Blocks
-    LN1 --> MHA --> ADD1 --> LN2 --> FFN --> ADD2
-    ADD2 --> LN_FINAL --> LM_HEAD --> LOGITS
+flowchart TB
+    TOKENS[Token IDs] --> TE[Token Embedding]
+    TOKENS --> PE[Position Embedding]
+    TE --> ADD_EMB[Add]
+    PE --> ADD_EMB
+    ADD_EMB --> LN1[LayerNorm]
+    LN1 --> MHA[Multi-Head Attention]
+    MHA --> ADD1[Add Residual]
+    ADD1 --> LN2[LayerNorm]
+    LN2 --> FFN[Feed-Forward]
+    FFN --> ADD2[Add Residual]
+    ADD2 --> REPEAT["× N Blocks"]
+    REPEAT --> LN_FINAL[LayerNorm]
+    LN_FINAL --> LM_HEAD[LM Head]
+    LM_HEAD --> LOGITS[Logits / Next Token]
 ```
 
 - **GPT-based Transformer**: Decoder-only architecture with self-attention
@@ -163,7 +147,7 @@ flowchart LR
 - **Positional Encoding**: Learned position embeddings
 - **Layer Normalization**: Pre-norm architecture for stable training
 
-## 🎯 Key Concepts
+## Key Concepts
 
 ### Training
 - **Next-Token Prediction**: Autoregressive language modeling
@@ -171,7 +155,7 @@ flowchart LR
 - **Mixed Precision**: Faster training with automatic mixed precision
 - **Checkpoint Management**: Automatic saving of best models
 
-## 🛠️ Installation
+## Installation
 
 ### Standard Installation
 
@@ -204,7 +188,7 @@ docker build -t kiara-slm:latest .
 docker-compose up train
 ```
 
-## 📖 Usage Examples
+## Usage Examples
 
 ### Training
 
@@ -256,7 +240,7 @@ curl -X POST "http://localhost:8000/generate" \
     -d '{"prompt": "Hello", "max_tokens": 50}'
 ```
 
-## 🧪 Development
+## Development
 
 ### Running Tests
 
@@ -284,7 +268,7 @@ make lint
 mypy src/
 ```
 
-## 🐳 Docker Usage
+## Docker Usage
 
 ### Training
 
