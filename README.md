@@ -362,6 +362,8 @@ See [Configuration Guide](documentation/CONFIGURATION.md) for all options.
 
 We welcome contributions! Kiara is built on the belief that open collaboration makes better AI.
 
+**Repository access:** This repository is protected. Only authorized maintainers can push directly to the default branch. Everyone can read, fork, and open pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute.
+
 **Ways to contribute:**
 - Code contributions (bug fixes, features, improvements)
 - Documentation improvements
