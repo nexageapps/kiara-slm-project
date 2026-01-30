@@ -6,11 +6,8 @@ An open-source, production-ready implementation of a Small Language Model built 
 
 ## 🚀 Try it Now
 
-**No setup required!** Test Kiara directly in your browser on Hugging Face Spaces:
+**No setup required!** Deploy your own instance on Hugging Face Spaces for free:
 
-[![Open in Spaces](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces-md.svg)](https://huggingface.co/spaces)
-
-Or deploy your own instance:
 - **[Hugging Face Spaces Deployment Guide](documentation/HUGGING_FACE_SPACES.md)** - Free hosting with GPU support
 
 ## Quick Start

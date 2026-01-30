@@ -266,8 +266,10 @@ Use Gradio's embed code:
 
 ```html
 <gradio-app src="https://YOUR_USERNAME-kiara-slm.hf.space"></gradio-app>
-<script type="module" src="https://gradio.s3-us-west-2.amazonaws.com/4.0.0/gradio.js"></script>
+<script type="module" src="https://gradio.s3-us-west-2.amazonaws.com/[VERSION]/gradio.js"></script>
 ```
+
+**Note:** Replace `[VERSION]` with the current Gradio version (check your Space's settings or use the embed code provided by Hugging Face).
 
 ### API Access
 
