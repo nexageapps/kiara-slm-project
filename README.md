@@ -68,13 +68,102 @@ kiara-slm-project/
 ### Migration & Reference
 - **[Migration Guide](documentation/MIGRATION_GUIDE.md)** - Upgrade from old structure
 
-## 🎯 Key Concepts
+## 🏗️ Architecture
 
-### Architecture
+### System Overview
+
+```mermaid
+flowchart TB
+    subgraph Data["📁 Data & Config"]
+        YAML[configs/*.yaml]
+        ENV[.env]
+        TRAIN_DATA[(data/train.txt)]
+        VAL_DATA[(data/val.txt)]
+    end
+
+    subgraph Core["🔧 Kiara Core (src/kiara)"]
+        CONFIG[config.py]
+        TOKENIZER[tokenizer.py]
+        MODEL[model.py]
+        ATTENTION[attention.py]
+        TRAINING[training.py]
+        UTILS[utils/]
+    end
+
+    subgraph Scripts["📜 Scripts"]
+        TRAIN_SCRIPT[train.py]
+        EVAL_SCRIPT[evaluate.py]
+        GEN_SCRIPT[generate.py]
+        SERVE_SCRIPT[serve.py]
+    end
+
+    subgraph Output["📤 Output"]
+        CHECKPOINT[(checkpoints/)]
+        API[REST API :8000]
+        TEXT[Generated Text]
+    end
+
+    YAML --> CONFIG
+    ENV --> CONFIG
+    CONFIG --> TRAIN_SCRIPT
+    TRAIN_DATA --> TRAIN_SCRIPT
+    VAL_DATA --> EVAL_SCRIPT
+    TRAIN_SCRIPT --> MODEL
+    TRAIN_SCRIPT --> TRAINING
+    MODEL --> ATTENTION
+    EVAL_SCRIPT --> MODEL
+    GEN_SCRIPT --> MODEL
+    SERVE_SCRIPT --> MODEL
+    TRAIN_SCRIPT --> CHECKPOINT
+    CHECKPOINT --> EVAL_SCRIPT
+    CHECKPOINT --> GEN_SCRIPT
+    CHECKPOINT --> SERVE_SCRIPT
+    GEN_SCRIPT --> TEXT
+    SERVE_SCRIPT --> API
+```
+
+### Model Architecture (GPT)
+
+```mermaid
+flowchart LR
+    subgraph Input["Input"]
+        TOKENS[Token IDs]
+    end
+
+    subgraph Embed["Embedding"]
+        TE[Token Embedding]
+        PE[Position Embedding]
+    end
+
+    subgraph Blocks["Transformer Blocks × N"]
+        LN1[LayerNorm]
+        MHA[Multi-Head Attention]
+        ADD1[Add & Norm]
+        LN2[LayerNorm]
+        FFN[Feed-Forward]
+        ADD2[Add & Norm]
+    end
+
+    subgraph Output["Output"]
+        LN_FINAL[LayerNorm]
+        LM_HEAD[LM Head]
+        LOGITS[Logits]
+    end
+
+    TOKENS --> TE
+    TOKENS --> PE
+    TE --> Blocks
+    PE --> Blocks
+    LN1 --> MHA --> ADD1 --> LN2 --> FFN --> ADD2
+    ADD2 --> LN_FINAL --> LM_HEAD --> LOGITS
+```
+
 - **GPT-based Transformer**: Decoder-only architecture with self-attention
 - **Multi-Head Attention**: Parallel attention mechanisms for rich representations
 - **Positional Encoding**: Learned position embeddings
 - **Layer Normalization**: Pre-norm architecture for stable training
+
+## 🎯 Key Concepts
 
 ### Training
 - **Next-Token Prediction**: Autoregressive language modeling
@@ -305,9 +394,18 @@ We welcome contributions! Kiara is built on the belief that open collaboration m
 - ⭐ **Star this repository** - Help others discover Kiara
 - 🤝 **Contribute code** - Your expertise makes Kiara better
 - 📢 **Share with others** - Spread the word about open-source AI
-- 💰 **Sponsor** - Support continued development
 
-[![Sponsor on GitHub](https://img.shields.io/badge/Sponsor_on_GitHub-FFB300?style=flat-square&logo=github)](https://github.com/sponsors/nexageapps)
+### 🙏 Sponsor
+
+Your sponsorship helps maintain Kiara, add features, and keep AI education accessible to everyone.
+
+<p align="center">
+  <a href="https://github.com/sponsors/nexageapps" title="Sponsor Kiara on GitHub">
+    <img src="https://img.shields.io/badge/GitHub_Sponsors-Support_this_project-ea4aaa?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor on GitHub" height="40" />
+  </a>
+</p>
+
+**[→ Sponsor on GitHub](https://github.com/sponsors/nexageapps)**
 
 ## 📄 License
 
