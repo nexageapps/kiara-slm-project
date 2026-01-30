@@ -38,13 +38,19 @@ Welcome to the Kiara Small Language Model documentation!
 
 ### Reference
 
-6. **[Project Structure](PROJECT_STRUCTURE.md)**
+6. **[Technical Documentation](TECHNICAL_DOCUMENTATION.md)**
+   - Project overview
+   - Main files and modules explained
+   - Data and checkpoint locations
+   - Flow summary (training, evaluation, generation)
+
+7. **[Project Structure](PROJECT_STRUCTURE.md)**
    - Complete directory tree
    - File and module descriptions
    - Architecture overview
    - Extension points
 
-7. **[Migration Guide](MIGRATION_GUIDE.md)**
+8. **[Migration Guide](MIGRATION_GUIDE.md)**
    - Upgrading from old structure
    - Import changes
    - New features overview
@@ -71,6 +77,9 @@ Welcome to the Kiara Small Language Model documentation!
 
 **Understand the codebase**
 → [Project Structure](PROJECT_STRUCTURE.md)
+
+**Get a technical overview of main files**
+→ [Technical Documentation](TECHNICAL_DOCUMENTATION.md)
 
 **Migrate from old version**
 → [Migration Guide](MIGRATION_GUIDE.md)
@@ -111,6 +120,14 @@ REST API reference including:
 - Request/response formats
 - Usage examples
 - Deployment options
+
+### Technical Documentation
+Technical overview of:
+- Project and main directories
+- Core modules (model, attention, training, tokenizer, config)
+- Scripts, configs, and tests
+- Data and checkpoint locations
+- End-to-end flow (train, evaluate, generate)
 
 ### Project Structure
 Detailed breakdown of:
