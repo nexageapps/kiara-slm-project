@@ -292,7 +292,7 @@ docker-compose up api
 # Access at http://localhost:8000
 ```
 
-## 📊 Model Configurations
+## Model Configurations
 
 ### Small (Fast Training)
 - Parameters: ~10M
@@ -312,7 +312,7 @@ docker-compose up api
 - Layers: 36
 - Heads: 20
 
-## 🔧 Configuration
+## Configuration
 
 ### YAML Configuration
 
@@ -340,7 +340,7 @@ export NUM_EPOCHS=20
 
 See [Configuration Guide](documentation/CONFIGURATION.md) for all options.
 
-## 📈 Implementation Roadmap
+## Implementation Roadmap
 
 - [x] Project setup and structure
 - [x] GPT model architecture
@@ -357,7 +357,7 @@ See [Configuration Guide](documentation/CONFIGURATION.md) for all options.
 - [ ] Model quantization
 - [ ] ONNX export
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Kiara is built on the belief that open collaboration makes better AI.
 
@@ -367,19 +367,19 @@ We welcome contributions! Kiara is built on the belief that open collaboration m
 - Bug reports and feature requests
 - Community support
 
-## 📝 Resources
+## Resources
 
 - **Book**: "Build a Large Language Model (From Scratch)" by Sebastian Raschka
 - **GitHub**: https://github.com/rasbt/LLMs-from-scratch
 - **PyTorch Docs**: https://pytorch.org/docs/
 
-## 💡 Support This Project
+## Support This Project
 
-- ⭐ **Star this repository** - Help others discover Kiara
-- 🤝 **Contribute code** - Your expertise makes Kiara better
-- 📢 **Share with others** - Spread the word about open-source AI
+- **Star this repository** - Help others discover Kiara
+- **Contribute code** - Your expertise makes Kiara better
+- **Share with others** - Spread the word about open-source AI
 
-### 🙏 Sponsor
+### Sponsor
 
 Your sponsorship helps maintain Kiara, add features, and keep AI education accessible to everyone.
 
@@ -391,7 +391,7 @@ Your sponsorship helps maintain Kiara, add features, and keep AI education acces
 
 **[→ Sponsor on GitHub](https://github.com/sponsors/nexageapps)**
 
-## 📄 License
+## License
 
 MIT License - Free to use, modify, and distribute.
 
@@ -399,4 +399,4 @@ Kiara is proudly open source. We believe AI education and tools should be access
 
 ---
 
-**Built with ❤️ by the open-source community**
+**Built by the open-source community**
