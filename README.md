@@ -63,6 +63,7 @@ kiara-slm-project/
 ### Configuration & Usage
 - **[Configuration Guide](documentation/CONFIGURATION.md)** - All configuration options
 - **[API Documentation](documentation/API.md)** - REST API reference
+- **[Technical Documentation](documentation/TECHNICAL_DOCUMENTATION.md)** - Overview of main files and project
 - **[Project Structure](documentation/PROJECT_STRUCTURE.md)** - Detailed structure overview
 
 ### Migration & Reference
