@@ -40,6 +40,10 @@ else
 fi
 
 echo "📤 Pushing to Hugging Face..."
+# Configure git identity for commit (required if not set globally)
+git config user.email "deploy@kiara-slm.local"
+git config user.name "Kiara SLM Deploy"
+
 git add .
 if git diff --staged --quiet; then
   echo "   No changes to push"

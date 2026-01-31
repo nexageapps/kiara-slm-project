@@ -1,3 +1,10 @@
+---
+title: Kiara SLM
+emoji: 🚀
+sdk: gradio
+sdk_version: "4.0.0"
+---
+
 # Kiara SLM - Hugging Face Spaces
 
 This directory contains the Gradio application for deploying Kiara SLM on Hugging Face Spaces.

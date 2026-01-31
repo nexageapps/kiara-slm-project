@@ -200,8 +200,20 @@ git clone https://huggingface.co/spaces/nexageapps/kiara-slm-project .
    ```
 
 5. **Trigger deployment**
-   - Push changes to `main` branch
-   - Or manually trigger via GitHub Actions tab
+   - Push changes to `main` branch (changes to `hf_spaces/`, `src/kiara/`, or the workflow file)
+   - Or manually trigger via **GitHub Actions** tab → "Sync to Hugging Face Spaces" → "Run workflow"
+
+### Troubleshooting: Files Not Appearing in HF Space
+
+If the workflow runs but files don't appear in your Hugging Face Space:
+
+1. **Verify `HF_TOKEN` secret** – Go to GitHub repo → Settings → Secrets and variables → Actions. Ensure `HF_TOKEN` exists (create at [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) with **Write** role).
+
+2. **Verify Space name** – The workflow defaults to `nexageapps/kiara-slm-project`. If your Space has a different name, add **Repository variables** (Settings → Actions → Variables): `HF_USERNAME` and `HF_SPACE_NAME`.
+
+3. **Check workflow run** – Go to Actions tab, open the latest "Sync to Hugging Face Spaces" run. Expand "Sync to Hugging Face Spaces" and look for errors (e.g. clone failure, push rejection).
+
+4. **Space SDK** – If your Space was created as Docker, the `hf_spaces/README.md` includes `sdk: gradio` frontmatter so it builds as Gradio. Redeploy by re-running the workflow.
 
 ## Configuration
 
