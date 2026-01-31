@@ -1,1 +1,128 @@
-name: Hugging Face Spaces Sync\n\non: [push, pull_request]\n\njobs:\n  sync:\n    runs-on: ubuntu-latest\n    steps:\n      - name: Check out repository\n        uses: actions/checkout@v2\n      - name: Set up Python\n        uses: actions/setup-python@v2\n        with:\n          python-version: '3.x'\n      - name: Install dependencies\n        run: |\n          pip install huggingface_hub\n          pip install huggingface-cli\n          echo "$(dirname $(realpath $(which huggingface-cli)))" >> $GITHUB_PATH\n      - name: Sync Hugging Face Spaces\n        run: |\n          huggingface-cli repo sync ... // Depending on your actual parameters\n\n
+name: Sync to Hugging Face Spaces
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'hf_spaces/**'
+      - 'src/kiara/**'
+      - '.github/workflows/hf-spaces-sync.yml'
+  workflow_dispatch:  # Allow manual trigger
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Hugging Face CLI
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade "huggingface_hub[cli]"
+
+          # Ensure huggingface-cli is in PATH for both current and subsequent steps
+          export PATH="$(python -m site --user-base)/bin:$PATH"
+          echo "$(python -m site --user-base)/bin" >> $GITHUB_PATH
+
+      - name: Sync to Hugging Face Spaces
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_USERNAME: ${{ vars.HF_USERNAME || 'nexageapps' }}
+          HF_SPACE_NAME: ${{ vars.HF_SPACE_NAME || 'kiara-slm-project' }}
+        run: |
+          # Validate HF_TOKEN is set (must be first)
+          if [ -z "$HF_TOKEN" ]; then
+            echo "::error::HF_TOKEN secret is not set. Add it in Settings > Secrets and variables > Actions"
+            exit 1
+          fi
+
+          # Configure git
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+          # Clone with auth so push works (HTTPS + token)
+          SPACE_REPO="https://${HF_USERNAME}:${HF_TOKEN}@huggingface.co/spaces/${HF_USERNAME}/${HF_SPACE_NAME}"
+          echo "Syncing to: https://huggingface.co/spaces/${HF_USERNAME}/${HF_SPACE_NAME}"
+
+          # Create a temporary directory for the Space
+          TEMP_DIR=$(mktemp -d)
+          cd $TEMP_DIR
+
+          # Clone the Space (create if doesn't exist)
+          git clone $SPACE_REPO space || {
+            echo "Space doesn't exist, creating new Space..."
+            python -m huggingface_hub.cli.huggingface_cli repo create --type space --space-sdk gradio "${HF_USERNAME}/${HF_SPACE_NAME}"
+            git clone $SPACE_REPO space
+          }
+
+          cd space
+
+          # Copy files from repository
+          echo "Copying files..."
+
+          # Copy app.py and requirements.txt to root
+          cp $GITHUB_WORKSPACE/hf_spaces/app.py .
+          cp $GITHUB_WORKSPACE/hf_spaces/requirements.txt .
+
+          # Copy README
+          cp $GITHUB_WORKSPACE/hf_spaces/README.md .
+
+          # Copy source code
+          rm -rf src
+          cp -r $GITHUB_WORKSPACE/src .
+
+          # Create a .gitignore if it doesn't exist
+          if [ ! -f .gitignore ]; then
+            echo "__pycache__/" > .gitignore
+            echo "*.py[cod]" >> .gitignore
+            echo '*$py.class' >> .gitignore
+            echo "*.so" >> .gitignore
+            echo ".Python" >> .gitignore
+            echo "*.egg-info/" >> .gitignore
+            echo ".env" >> .gitignore
+            echo ".venv" >> .gitignore
+            echo "venv/" >> .gitignore
+            echo "checkpoints/" >> .gitignore
+            echo "*.pt" >> .gitignore
+            echo "*.pth" >> .gitignore
+            echo ".DS_Store" >> .gitignore
+          fi
+
+          # Check if there are changes
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "No changes to sync"
+            exit 0
+          fi
+
+          # Commit and push
+          git add .
+          git commit -m "Sync from GitHub: $GITHUB_SHA" -m "Auto-sync triggered by push to main branch"
+          git push
+
+          echo "✅ Successfully synced to Hugging Face Spaces"
+          echo "🌐 View your Space at: https://huggingface.co/spaces/${HF_USERNAME}/${HF_SPACE_NAME}"
+
+      - name: Comment on commit (optional)
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HF_USERNAME: ${{ vars.HF_USERNAME || 'nexageapps' }}
+          HF_SPACE_NAME: ${{ vars.HF_SPACE_NAME || 'kiara-slm-project' }}
+        run: |
+          # Create a comment on the commit with the Space URL
+          SPACE_URL="https://huggingface.co/spaces/${HF_USERNAME}/${HF_SPACE_NAME}"
+          echo "Deployed to Hugging Face Spaces: $SPACE_URL"
