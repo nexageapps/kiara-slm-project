@@ -35,8 +35,8 @@ jobs:
       - name: Sync to Hugging Face Spaces
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          HF_USERNAME: ${{ vars.HF_USERNAME || 'your-hf-username' }}
-          HF_SPACE_NAME: ${{ vars.HF_SPACE_NAME || 'kiara-slm' }}
+          HF_USERNAME: ${{ vars.HF_USERNAME || 'nexageapps' }}
+          HF_SPACE_NAME: ${{ vars.HF_SPACE_NAME || 'kiara-slm-project' }}
         run: |
           # Configure git
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -113,8 +113,8 @@ EOF
         if: github.event_name == 'push'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HF_USERNAME: ${{ vars.HF_USERNAME || 'your-hf-username' }}
-          HF_SPACE_NAME: ${{ vars.HF_SPACE_NAME || 'kiara-slm' }}
+          HF_USERNAME: ${{ vars.HF_USERNAME || 'nexageapps' }}
+          HF_SPACE_NAME: ${{ vars.HF_SPACE_NAME || 'kiara-slm-project' }}
         run: |
           # Create a comment on the commit with the Space URL
           SPACE_URL="https://huggingface.co/spaces/${HF_USERNAME}/${HF_SPACE_NAME}"
