@@ -35,18 +35,18 @@ jobs:
       - name: Sync to Hugging Face Spaces
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          HF_USERNAME: ${{ vars.HF_USERNAME || 'your-hf-username' }}
-          HF_SPACE_NAME: ${{ vars.HF_SPACE_NAME || 'kiara-slm' }}
+          HF_USERNAME: ${{ vars.HF_USERNAME || 'nexageapps' }}
+          HF_SPACE_NAME: ${{ vars.HF_SPACE_NAME || 'kiara-slm-project' }}
         run: |
           # Configure git
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           
-          # Login to Hugging Face
+          # Login to Hugging Face (enables git credential helper for push)
           huggingface-cli login --token $HF_TOKEN
           
-          # Clone the Space repository
-          SPACE_REPO="https://huggingface.co/spaces/${HF_USERNAME}/${HF_SPACE_NAME}"
+          # Clone with auth so push works (HTTPS + token)
+          SPACE_REPO="https://${HF_USERNAME}:${HF_TOKEN}@huggingface.co/spaces/${HF_USERNAME}/${HF_SPACE_NAME}"
           echo "Syncing to: $SPACE_REPO"
           
           # Create a temporary directory for the Space
