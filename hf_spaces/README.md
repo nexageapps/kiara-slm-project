@@ -9,6 +9,24 @@ sdk_version: "6.5.1"
 
 This directory contains the Gradio application for deploying Kiara SLM on Hugging Face Spaces.
 
+## ⚠️ Important: Model Checkpoint Required
+
+**This Space requires a trained model checkpoint to work!**
+
+If you see "No model loaded" error, you need to:
+
+1. **Train a model** (if you don't have one):
+   ```bash
+   python scripts/train.py --config configs/small.yaml
+   ```
+
+2. **Upload the checkpoint**:
+   - Go to "Files" tab in this Space
+   - Create `checkpoints` folder
+   - Upload your `best_model.pt` file
+
+See [HUGGING_FACE_FIX.md](https://github.com/nexageapps/kiara-slm-project/blob/main/HUGGING_FACE_FIX.md) for detailed instructions.
+
 ## 🚀 Quick Deploy to Hugging Face Spaces
 
 ### Prerequisites
