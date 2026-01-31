@@ -1,0 +1,40 @@
+# Large Model Configuration (Best Quality)
+
+model:
+  vocab_size: 50257
+  context_length: 512
+  emb_dim: 1280
+  n_heads: 20
+  n_layers: 36
+  drop_rate: 0.1
+
+training:
+  learning_rate: 3.0e-4
+  batch_size: 16
+  num_epochs: 20
+  weight_decay: 0.1
+  warmup_steps: 200
+  gradient_clip: 1.0
+  eval_freq: 200
+  eval_iter: 20
+  save_every_n_steps: 2000
+  keep_last_n_checkpoints: 3
+
+data:
+  data_dir: ./data
+  train_data_path: ./data/train.txt
+  val_data_path: ./data/val.txt
+  stride: 256
+  num_workers: 8
+
+logging:
+  log_level: INFO
+  log_dir: ./logs
+  use_wandb: false
+  wandb_project: kiara-slm
+  wandb_entity: null
+
+checkpoint_dir: ./checkpoints
+device: cuda
+mixed_precision: true
+seed: 42
