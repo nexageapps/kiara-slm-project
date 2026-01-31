@@ -37,7 +37,7 @@ jobs:
           echo "Python version: $(python --version)"
           echo "Pip version: $(pip --version)"
           echo "Python executable: $(which python)"
-          echo "Pip install location: $(python -m pip show huggingface_hub | grep Location || echo 'Not found')"
+          echo "Pip install location: $(python -m pip show huggingface_hub | grep '^Location:' || echo 'Not found')"
           
           # Check if huggingface-cli is in PATH
           echo "PATH: $PATH"
@@ -49,7 +49,8 @@ jobs:
             python -m huggingface_hub.commands.huggingface_cli --version || echo "❌ Failed to run via Python module"
           fi
           
-          # Ensure user site-packages bin is in PATH
+          # Ensure user site-packages bin is in PATH for subsequent steps
+          # Note: This PATH modification only affects subsequent workflow steps, not this one
           echo "$(python -m site --user-base)/bin" >> $GITHUB_PATH
 
       - name: Sync to Hugging Face Spaces
