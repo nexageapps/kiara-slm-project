@@ -1,133 +1,181 @@
-# Fixing "ModuleNotFoundError: No module named 'kiara'" on Hugging Face Spaces
+# Fixing "No model loaded" Error on Hugging Face Spaces
 
-## Problem
-Your Hugging Face Space is failing with:
+## The Problem
+
+Your Hugging Face Space shows:
 ```
-ModuleNotFoundError: No module named 'kiara'
+⚠️ No model loaded
+Please upload a checkpoint file or set CHECKPOINT_PATH environment variable.
 ```
 
-## Root Cause
-The `src/kiara/` directory structure is missing from your Hugging Face Space. The app needs the entire source code to be uploaded.
+This happens because the app can't find a trained model checkpoint file.
 
-## Solution
+## Quick Fix Options
 
-### Quick Fix (Manual Upload)
+### Option 1: Upload Checkpoint via Web Interface (Easiest - 2 minutes)
 
-1. **Go to your Hugging Face Space**
-   - Navigate to: https://huggingface.co/spaces/nexageapps/kiara-slm-project
+1. **Train a model first** (if you haven't already):
+   ```bash
+   python scripts/train.py --config configs/small.yaml
+   ```
+   This creates `checkpoints/best_model.pt`
 
-2. **Upload the src directory**
-   - Click "Files" tab
+2. **Go to your Space**: https://huggingface.co/spaces/nexageapps/kiara-slm-project
+
+3. **Click "Files" tab** at the top
+
+4. **Create checkpoints folder**:
+   - Click "Add file" → "Create a new file"
+   - Name it: `checkpoints/.gitkeep`
+   - Click "Commit new file"
+
+5. **Upload your checkpoint**:
    - Click "Add file" → "Upload files"
-   - Upload the entire `src/` directory from your local project
-   - Make sure the structure looks like this:
-     ```
-     /
-     ├── app.py
-     ├── requirements.txt
-     ├── README.md
-     └── src/
-         └── kiara/
-             ├── __init__.py
-             ├── model.py
-             ├── training.py
-             ├── attention.py
-             ├── config.py
-             ├── tokenizer.py
-             └── utils/
-                 ├── __init__.py
-                 ├── checkpoint.py
-                 ├── logging.py
-                 └── metrics.py
-     ```
+   - Navigate to `checkpoints` folder
+   - Drag and drop your `best_model.pt` file
+   - Click "Commit changes"
 
-3. **Verify the upload**
-   - Check that all files are present in the Files tab
-   - The Space should automatically rebuild
+6. **Wait for rebuild** (2-3 minutes)
+   - The Space will automatically rebuild
+   - Refresh the page once it's done
 
-4. **Wait for rebuild**
-   - The Space will rebuild automatically (2-5 minutes)
-   - Check the build logs for any errors
+### Option 2: Deploy with Script (Automated)
 
-### Automated Fix (Using Deploy Script)
-
-Run the deployment script from your local project:
+If you have a checkpoint locally, use the deploy script:
 
 ```bash
-# Make sure you're logged into Hugging Face
-huggingface-cli login
+# Make sure you have a checkpoint
+ls checkpoints/best_model.pt
 
-# Run the deploy script
+# Deploy (includes checkpoint automatically)
 ./scripts/deploy_to_hf.sh
 ```
 
-This script will:
-- Copy all necessary files to a temporary directory
-- Push them to your Hugging Face Space
-- Maintain the correct directory structure
+The script will:
+- Copy your app files
+- Include the checkpoint if it exists
+- Push everything to HF Spaces
 
-## What I Fixed
+### Option 3: Use Git LFS (For large checkpoints)
 
-I've updated the following files to handle imports better:
+If your checkpoint is very large (>100MB):
 
-1. **hf_spaces/app.py** - Added fallback import logic that:
-   - First tries to import `kiara` directly
-   - If that fails, looks for `src/` directory in the current or parent directory
-   - Adds the appropriate path to `sys.path`
+1. **Install Git LFS**:
+   ```bash
+   # macOS
+   brew install git-lfs
+   
+   # Linux
+   apt-get install git-lfs
+   
+   # Initialize
+   git lfs install
+   ```
 
-2. **hf_spaces/requirements.txt** - Kept it simple with just the dependencies (no `-e .`)
+2. **Clone your Space**:
+   ```bash
+   git clone https://huggingface.co/spaces/nexageapps/kiara-slm-project
+   cd kiara-slm-project
+   ```
 
-## Verification Checklist
+3. **Track checkpoint files with LFS**:
+   ```bash
+   git lfs track "*.pt"
+   git add .gitattributes
+   ```
 
-After uploading, verify:
+4. **Add your checkpoint**:
+   ```bash
+   mkdir -p checkpoints
+   cp /path/to/your/best_model.pt checkpoints/
+   git add checkpoints/best_model.pt
+   git commit -m "Add model checkpoint"
+   git push
+   ```
 
-- [ ] `src/kiara/` directory exists in your Space
-- [ ] All Python files are present in `src/kiara/`
-- [ ] `app.py` is at the root level
-- [ ] `requirements.txt` is at the root level
-- [ ] Space builds without errors
-- [ ] App loads and shows the interface
-- [ ] (Optional) Model checkpoint is uploaded to `checkpoints/best_model.pt`
+### Option 4: Use Environment Variable (Advanced)
 
-## Testing
+If your checkpoint is hosted elsewhere:
 
-Once deployed, test the Space:
+1. **Go to Space Settings**: https://huggingface.co/spaces/nexageapps/kiara-slm-project/settings
 
-1. Open your Space URL
-2. Check if the interface loads
-3. Try generating text with a simple prompt
-4. Verify no import errors in the logs
+2. **Scroll to "Repository secrets"**
 
-## Alternative: Use Git Push
+3. **Add new variable**:
+   - Name: `CHECKPOINT_PATH`
+   - Value: `/path/to/your/checkpoint.pt`
 
-If you prefer using Git:
+4. **Restart the Space**
 
+## Verifying the Fix
+
+After uploading the checkpoint:
+
+1. Wait for the Space to rebuild (check the "Building" indicator)
+2. Refresh the page
+3. You should see "✅ Loaded" in the Model Info section
+4. Try generating text with a prompt
+
+## Troubleshooting
+
+### "Checkpoint file is corrupted"
+
+Your checkpoint might be incomplete. Re-train or re-upload:
 ```bash
-# Clone your Space
-git clone https://huggingface.co/spaces/nexageapps/kiara-slm-project kiara-hf-space
-cd kiara-hf-space
-
-# Copy files from your project
-cp /path/to/your/project/hf_spaces/app.py .
-cp /path/to/your/project/hf_spaces/requirements.txt .
-cp /path/to/your/project/hf_spaces/README.md .
-cp -r /path/to/your/project/src .
-
-# Commit and push
-git add .
-git commit -m "Add src directory to fix import error"
-git push
+python scripts/train.py --config configs/small.yaml
 ```
 
-## Need More Help?
+### "File too large to upload"
 
-If you're still having issues:
+Use Git LFS (Option 3 above) or reduce model size:
+```bash
+# Train a smaller model
+python scripts/train.py --config configs/small.yaml
+```
 
-1. Check the Space logs (click "Logs" tab in your Space)
-2. Verify the file structure matches the expected layout
-3. Make sure all `__init__.py` files are present
-4. Check that there are no syntax errors in the Python files
+### "Still showing 'No model loaded'"
+
+Check the Space logs:
+1. Go to your Space
+2. Click "Logs" tab
+3. Look for error messages about checkpoint loading
+
+Common issues:
+- Wrong file path (should be `checkpoints/best_model.pt`)
+- File not committed properly
+- Checkpoint format mismatch
+
+### "Build failed after uploading"
+
+The checkpoint might be too large for the free tier:
+- Free tier: 50GB storage limit
+- Consider using a smaller model
+- Or upgrade to a paid tier
+
+## Creating a Checkpoint (If You Don't Have One)
+
+If you don't have a trained model yet:
+
+```bash
+# Quick training (5-10 minutes on CPU)
+python scripts/train.py --config configs/small.yaml --epochs 5
+
+# This creates: checkpoints/best_model.pt
+```
+
+Then use Option 1 or 2 above to upload it.
+
+## Need Help?
+
+- Check the full deployment guide: `documentation/HUGGING_FACE_SPACES.md`
+- Open an issue: https://github.com/nexageapps/kiara-slm-project/issues
+- HF Spaces docs: https://huggingface.co/docs/hub/spaces
 
 ## Summary
 
-The fix is simple: **upload the `src/` directory to your Hugging Face Space**. The app needs access to the source code to import the `kiara` module.
+The error happens because there's no model checkpoint in your Space. Fix it by:
+1. Training a model locally (if needed)
+2. Uploading `best_model.pt` to `checkpoints/` folder in your Space
+3. Waiting for the Space to rebuild
+
+That's it! Your Space should work after the checkpoint is uploaded.
