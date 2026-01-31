@@ -4,6 +4,12 @@ An open-source, production-ready implementation of a Small Language Model built 
 
 > Kiara represents clarity and accessibility in AI development - building language models that anyone can understand, learn from, and contribute to.
 
+## 🚀 Try it Now
+
+**No setup required!** Deploy your own instance on Hugging Face Spaces for free:
+
+- **[Hugging Face Spaces Deployment Guide](documentation/HUGGING_FACE_SPACES.md)** - Free hosting with GPU support
+
 ## Quick Start
 
 ```bash
@@ -26,12 +32,13 @@ python scripts/serve.py --checkpoint checkpoints/best_model.pt
 
 ## Features
 
+- **Zero-Setup Demo**: Try instantly on Hugging Face Spaces
 - **Production-Ready**: Docker support, API server, checkpoint management
 - **Flexible Configuration**: YAML configs, environment variables, CLI args
 - **Comprehensive Testing**: Unit tests with pytest and coverage
 - **Modern Tooling**: Black, isort, flake8, mypy, pre-commit hooks
 - **Well Documented**: Extensive guides and API documentation
-- **Easy Deployment**: Docker Compose for training and serving
+- **Easy Deployment**: Docker Compose, Hugging Face Spaces integration
 
 ## Project Structure
 
@@ -57,6 +64,7 @@ kiara-slm-project/
 
 ### Getting Started
 - **[Quick Start Guide](documentation/QUICKSTART.md)** - Get running in 5 minutes
+- **[Hugging Face Spaces Deployment](documentation/HUGGING_FACE_SPACES.md)** - Deploy for free with one click
 - **[Production Setup](documentation/README_PRODUCTION.md)** - Complete production guide
 - **[Tutorial](documentation/TUTORIAL.md)** - Step-by-step learning guide
 
