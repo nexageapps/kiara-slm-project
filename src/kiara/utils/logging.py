@@ -42,6 +42,7 @@ def setup_logger(
     
     # File handler
     if log_dir and log_file:
+        log_dir = Path(log_dir) if not isinstance(log_dir, Path) else log_dir
         log_dir.mkdir(parents=True, exist_ok=True)
         file_handler = logging.FileHandler(log_dir / log_file)
         file_handler.setLevel(logging.DEBUG)
