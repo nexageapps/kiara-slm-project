@@ -28,16 +28,29 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Hugging Face CLI
-         run: |
-           python -m pip install --upgrade pip
-           pip install "huggingface_hub[cli]"
-           which huggingface-cli || echo "huggingface-cli not found, check installation"
-
-      - name: Set up Python and Hugging Face CLI
+      - name: Install and Verify Hugging Face CLI
         run: |
           python -m pip install --upgrade pip
           pip install "huggingface_hub[cli]"
+          
+          # Debug: Check Python and pip configuration
+          echo "Python version: $(python --version)"
+          echo "Pip version: $(pip --version)"
+          echo "Python executable: $(which python)"
+          echo "Pip install location: $(python -m pip show huggingface_hub | grep Location || echo 'Not found')"
+          
+          # Check if huggingface-cli is in PATH
+          echo "PATH: $PATH"
+          if command -v huggingface-cli &> /dev/null; then
+            echo "✅ huggingface-cli found in PATH: $(which huggingface-cli)"
+            huggingface-cli --version
+          else
+            echo "⚠️ huggingface-cli not found in PATH, checking Python module..."
+            python -m huggingface_hub.commands.huggingface_cli --version || echo "❌ Failed to run via Python module"
+          fi
+          
+          # Ensure user site-packages bin is in PATH
+          echo "$(python -m site --user-base)/bin" >> $GITHUB_PATH
 
       - name: Sync to Hugging Face Spaces
         env:
@@ -50,7 +63,12 @@ jobs:
           git config --global user.name "github-actions[bot]"
 
           # Login to Hugging Face (enables git credential helper for push)
-          huggingface-cli login --token $HF_TOKEN
+          if command -v huggingface-cli &> /dev/null; then
+            huggingface-cli login --token $HF_TOKEN
+          else
+            echo "Using Python module invocation for huggingface-cli"
+            python -m huggingface_hub.commands.huggingface_cli login --token $HF_TOKEN
+          fi
 
           # Clone with auth so push works (HTTPS + token)
           SPACE_REPO="https://${HF_USERNAME}:${HF_TOKEN}@huggingface.co/spaces/${HF_USERNAME}/${HF_SPACE_NAME}"
@@ -63,7 +81,12 @@ jobs:
           # Clone the Space (create if doesn't exist)
           git clone $SPACE_REPO space || {
             echo "Space doesn't exist, creating new Space..."
-            huggingface-cli repo create --type space --space-sdk gradio "${HF_USERNAME}/${HF_SPACE_NAME}"
+            if command -v huggingface-cli &> /dev/null; then
+              huggingface-cli repo create --type space --space-sdk gradio "${HF_USERNAME}/${HF_SPACE_NAME}"
+            else
+              echo "Using Python module invocation for huggingface-cli"
+              python -m huggingface_hub.commands.huggingface_cli repo create --type space --space-sdk gradio "${HF_USERNAME}/${HF_SPACE_NAME}"
+            fi
             git clone $SPACE_REPO space
           }
 
