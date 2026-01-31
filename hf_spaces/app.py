@@ -7,14 +7,26 @@ import gradio as gr
 import torch
 import tiktoken
 import os
+import sys
 from pathlib import Path
 
-# Add parent directory to path to import kiara modules
-import sys
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
-from kiara.model import GPTModel
-from kiara.training import generate_text_simple, generate_text_sampling
+# Handle imports - try direct import first, then add src to path if needed
+try:
+    from kiara.model import GPTModel
+    from kiara.training import generate_text_simple, generate_text_sampling
+except ModuleNotFoundError:
+    # If kiara module not found, add src directory to path
+    src_path = Path(__file__).parent / "src"
+    if src_path.exists():
+        sys.path.insert(0, str(src_path))
+    else:
+        # Try parent directory's src
+        src_path = Path(__file__).parent.parent / "src"
+        if src_path.exists():
+            sys.path.insert(0, str(src_path))
+    
+    from kiara.model import GPTModel
+    from kiara.training import generate_text_simple, generate_text_sampling
 
 
 class KiaraSpacesApp:
