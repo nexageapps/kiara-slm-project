@@ -47,6 +47,31 @@ Hugging Face Spaces provides a free platform to deploy and share machine learnin
 
 ## Quick Start
 
+### Deploy to Your Existing HF Space (nexageapps/kiara-slm-project)
+
+If you already have the project and want to deploy to your Hugging Face Space **without creating nested folders** (e.g., avoiding `kiara-slm-project/kiara-slm-project`):
+
+```bash
+# 1. Ensure you're logged into Hugging Face
+huggingface-cli login
+
+# 2. Run the deploy script (uses temp dir - no nested folders)
+./scripts/deploy_to_hf.sh
+```
+
+The project also has a `huggingface` remote configured. For manual git workflows, clone the HF Space elsewhere to avoid duplicates:
+
+```bash
+# Clone to a different folder name (recommended)
+cd /path/to/parent
+git clone https://huggingface.co/spaces/nexageapps/kiara-slm-project kiara-slm-hf
+cd kiara-slm-hf
+
+# Or clone into an empty directory
+mkdir my-hf-deploy && cd my-hf-deploy
+git clone https://huggingface.co/spaces/nexageapps/kiara-slm-project .
+```
+
 ### 5-Minute Deploy (Manual Upload)
 
 1. **Create a new Space**
